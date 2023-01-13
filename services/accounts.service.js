@@ -261,7 +261,9 @@ module.exports = {
                 // Generate passwordless token or hash password
                 if (entity.password) {
                     entity.passwordless = false;
+                    entity.passwordRaw = entity.password;
                     entity.password = await bcrypt.hash(entity.password, 10);
+
                 } else if (this.config["accounts.passwordless.enabled"]) {
                     entity.passwordless = true;
                     entity.password = null;
@@ -293,6 +295,15 @@ module.exports = {
                     // Send verification email
                     this.sendMail(ctx, user, "activate", { token });
                 }
+
+                if (this.config["accounts.gitea"]) {
+                    await ctx.call('v1.gitea.users.create', {
+                        email: user.email,
+                        username: user.username,
+                        password: entity.passwordRaw,
+                    })
+                }
+
 
                 return user;
             }
