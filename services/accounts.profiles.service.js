@@ -18,10 +18,7 @@ module.exports = {
 
     mixins: [
         DbService({
-            entityChangedEventMode: 'emit',
-            cache: {
-                additionalKeys: ["#userID"]
-            }
+            entityChangedEventMode: 'emit'
         }),
         ConfigLoader(['accounts.**']),
 
@@ -36,7 +33,7 @@ module.exports = {
      * Service settings
      */
     settings: {
-        rest: '/v1/accounts/',
+        rest: '/v1/profiles/',
 
         fields: {
 
@@ -143,19 +140,46 @@ module.exports = {
 
         defaultScopes: ['owner']
     },
-
+    
     /**
      * Actions
      */
     actions: {
 
+        create: {
+            permissions: ['accounts.profiles.create']
+        },
+        list: {
+            permissions: ['accounts.profiles.list']
+        },
+        find: {
+            rest: "GET /find",
+            permissions: ['accounts.profiles.find']
+        },
+        count: {
+            rest: "GET /count",
+            permissions: ['accounts.profiles.count']
+        },
+        get: {
+            needEntity: true,
+            permissions: ['accounts.profiles.get']
+        },
+        update: {
+            needEntity: true,
+            permissions: ['accounts.profiles.update']
+        },
+        replace: false,
+        remove: {
+            needEntity: true,
+            permissions: ['accounts.profiles.remove']
+        },
         resolveProfile: {
             description: "Add members to the board",
-            rest: "GET /profile",
+            rest: "GET /me",
             params: {
 
             },
-            permissions: [`accounts.profiles.addRoute`],
+            permissions: [`accounts.profiles.resolveProfile`],
             async handler(ctx) {
                 const params = Object.assign({}, ctx.params);
 
@@ -166,6 +190,47 @@ module.exports = {
 
 
                 return entity
+            }
+        },
+        updateProfile: {
+            description: "Add members to the board",
+            rest: "PATCH /me",
+            params: {
+
+            },
+            permissions: [`accounts.profiles.updateProfile`],
+            async handler(ctx) {
+                const params = Object.assign({}, ctx.params);
+
+                const update = {}
+
+                const fields = ['firstName',
+                    'lastName',
+                    'about',
+                    'company',
+                    'job',
+                    'address',
+                    'country',
+                    'phone',
+                    'twitter',
+                    'facebook',
+                    'instagram',
+                    'linkedin']
+
+                for (let index = 0; index < fields.length; index++) {
+                    const key = fields[index];
+                    if (params.hasOwnProperty(key)) {
+                        update[key] = params[key]
+                    }
+                }
+                const entity = await this.findEntity(ctx, {
+                    query: { owner: ctx.meta.userID },
+                    fields: ['id']
+                })
+                return this.updateEntity(ctx, {
+                    id: entity.id,
+                    ...update
+                });
             }
         },
     },
