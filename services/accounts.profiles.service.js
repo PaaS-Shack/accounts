@@ -223,7 +223,7 @@ module.exports = {
                         update[key] = params[key]
                     }
                 }
-                const entity = await this.findEntity(ctx, {
+                const entity = await this.findEntity(null, {
                     query: { owner: ctx.meta.userID },
                     fields: ['id']
                 })
