@@ -127,6 +127,7 @@ module.exports = {
         },
 
         can: {
+			rest: 'POST /can',
             cache: {
                 keys: ["#roles", "permissions"]
             },
@@ -140,6 +141,7 @@ module.exports = {
         },
 
         hasAccess: {
+			rest: 'POST /has-access',
             cache: {
                 keys: ["#roles", "permissions"]
             },
@@ -158,6 +160,7 @@ module.exports = {
          * @param {string} permission
          */
         assignPermission: {
+			rest: 'POST /assign-permission',
             params: {
                 id: "string",
                 permission: "string"
@@ -177,6 +180,7 @@ module.exports = {
          * @param {string} permission
          */
         revokePermission: {
+			rest: 'POST /revoke-permission',
             params: {
                 id: "string",
                 permission: "string"
