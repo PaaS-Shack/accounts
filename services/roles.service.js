@@ -218,6 +218,21 @@ module.exports = {
                 return this.syncPermissions(ctx, entity, ctx.params.permissions);
             }
         },
+
+        /**
+         * List all permissions for a given role
+         *
+         * @param {String} id
+         * @param {Array<String>} permissions
+         */
+        getPermissions: {
+            params: {
+                role: "string"
+            },
+            async handler(ctx) {
+                return this.getPermissions(ctx, ctx.params.role);
+            }
+        },
     },
 
 
