@@ -195,6 +195,45 @@ module.exports = {
         },
 
         /**
+         * Assigns the given role to the role.
+         * @param {String} id
+         * @param {string} permission
+         */
+        assignInheritance: {
+			rest: 'POST /assign-inheritance',
+            params: {
+                id: "string",
+                role: "string"
+            },
+            async handler(ctx) {
+                const entity = await this.actions.resolve({
+                    id: ctx.params.id
+                }, { parentCtx: ctx })
+                return this.assignInheritance(ctx, entity, ctx.params.role);
+            }
+        },
+
+        /**
+         * Revokes the given role from the role.
+         *
+         * @param {String} id
+         * @param {string} role
+         */
+        revokeInheritance: {
+			rest: 'POST /revoke-inheritance',
+            params: {
+                id: "string",
+                role: "string"
+            },
+            async handler(ctx) {
+                const entity = await this.actions.resolve({
+                    id: ctx.params.id
+                }, { parentCtx: ctx })
+                return this.revokeInheritance(ctx, entity, ctx.params.role);
+            }
+        },
+
+        /**
          * Syncs the given permissions with the role. This will revoke any permissions not supplied.
          *
          * @param {String} id
@@ -237,6 +276,41 @@ module.exports = {
                 return this.updateEntity(ctx, {
                     id: role.id,
                     permissions: [...role.permissions, permission]
+                }, {
+                    permissive: true
+                })
+            }
+            return role;
+        },
+        /**
+         * Assigns the given permission to the role.
+         * @param {Object} role
+         * @param {string} permission
+         */
+        async assignInheritance(ctx, role, permission) {
+            if (role.inherits.indexOf(permission) === -1) {
+                return this.updateEntity(ctx, {
+                    id: role.id,
+                    inherits: [...role.inherits, permission]
+                }, {
+                    permissive: true
+                })
+            }
+            return role;
+        },
+
+        /**
+         * Revokes the given permission from the role.
+         *
+         * @param {Object} role
+         * @param {string} permission
+         */
+        async revokeInheritance(ctx, role, permission) {
+            if (role.inherits.indexOf(permission) !== -1) {
+
+                return this.updateEntity(ctx, {
+                    id: role.id,
+                    inherits: role.inherits.filter((perm) => perm !== permission)
                 }, {
                     permissive: true
                 })
