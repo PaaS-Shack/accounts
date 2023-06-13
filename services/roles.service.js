@@ -74,60 +74,26 @@ module.exports = {
 
 
 
-
-            options: { type: "object" },
-            ...C.ARCHIVED_FIELDS,
-            ...C.TIMESTAMP_FIELDS
+            ...DbService.FIELDS
 
         },
         defaultPopulates: [],
 
         scopes: {
-            // List the non-archived addons
-            notArchived: { archived: false },
-
-            // List the not deleted addons
-            notDeleted: { deletedAt: null },
-
+            ...DbService.SCOPE
         },
 
-        defaultScopes: ["notDeleted"]
+        defaultScopes: [...DbService.DSCOPE]
     },
 
     /**
      * Actions
      */
     actions: {
-        create: {
-            permissions: [C.ROLE_ADMINISTRATOR]
-        },
-        list: {
-            permissions: [C.ROLE_ADMINISTRATOR]
-        },
-        find: {
-            rest: "GET /find",
-            permissions: [C.ROLE_ADMINISTRATOR]
-        },
-        count: {
-            rest: "GET /count",
-            permissions: [C.ROLE_ADMINISTRATOR]
-        },
-        get: {
-            needEntity: true,
-            permissions: [C.ROLE_ADMINISTRATOR]
-        },
-        update: {
-            needEntity: true,
-            permissions: [C.ROLE_ADMINISTRATOR]
-        },
-        replace: false,
-        remove: {
-            needEntity: true,
-            permissions: [C.ROLE_ADMINISTRATOR]
-        },
+        ...DbService.ACTIONS,
 
         can: {
-			rest: 'POST /can',
+            rest: 'POST /can',
             cache: {
                 keys: ["#roles", "permissions"]
             },
@@ -141,7 +107,7 @@ module.exports = {
         },
 
         hasAccess: {
-			rest: 'POST /has-access',
+            rest: 'POST /has-access',
             cache: {
                 keys: ["#roles", "permissions"]
             },
@@ -160,7 +126,7 @@ module.exports = {
          * @param {string} permission
          */
         assignPermission: {
-			rest: 'POST /assign-permission',
+            rest: 'POST /assign-permission',
             params: {
                 id: "string",
                 permission: "string"
@@ -180,13 +146,13 @@ module.exports = {
          * @param {string} permission
          */
         revokePermission: {
-			rest: 'POST /revoke-permission',
+            rest: 'POST /revoke-permission',
             params: {
                 id: "string",
                 permission: "string"
             },
             async handler(ctx) {
-                
+
                 const entity = await this.actions.resolve({
                     id: ctx.params.id
                 }, { parentCtx: ctx })
@@ -200,7 +166,7 @@ module.exports = {
          * @param {string} permission
          */
         assignInheritance: {
-			rest: 'POST /assign-inheritance',
+            rest: 'POST /assign-inheritance',
             params: {
                 id: "string",
                 role: "string"
@@ -220,7 +186,7 @@ module.exports = {
          * @param {string} role
          */
         revokeInheritance: {
-			rest: 'POST /revoke-inheritance',
+            rest: 'POST /revoke-inheritance',
             params: {
                 id: "string",
                 role: "string"
@@ -245,7 +211,7 @@ module.exports = {
                 permissions: { type: "array", items: "string" }
             },
             async handler(ctx) {
-                
+
                 const entity = await this.actions.resolve({
                     id: ctx.params.id
                 }, { parentCtx: ctx })

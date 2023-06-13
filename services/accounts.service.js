@@ -70,7 +70,9 @@ const FIELDS = {
             secret: { type: "string", hidden: true }
         }
     },
-    lastLoginAt: { type: "number", readonly: false }
+    lastLoginAt: { type: "number", readonly: false },
+    
+    ...DbService.FIELDS
 };
 
 /**
@@ -123,7 +125,17 @@ module.exports = {
             "accounts.jwt.expiresIn": "30d",
             "accounts.two-factor.enabled": false,
             "accounts.password.minimum": 6,
-        }
+        },
+
+        
+        defaultPopulates: [],
+
+        scopes: {
+            ...DbService.SCOPE
+
+        },
+
+        defaultScopes: [...DbService.DSCOPE]
     },
 
     /**

@@ -129,16 +129,17 @@ module.exports = {
                 trim: true,
                 default: ''
             },
+
+            
+            ...DbService.FIELDS
         },
         defaultPopulates: [],
 
         scopes: {
-
-
-
+            ...DbService.SCOPE
         },
 
-        defaultScopes: ['owner']
+        defaultScopes: ['owner',...DbService.DSCOPE]
     },
     
     /**
@@ -146,33 +147,9 @@ module.exports = {
      */
     actions: {
 
-        create: {
-            permissions: ['accounts.profiles.create']
-        },
-        list: {
-            permissions: ['accounts.profiles.list']
-        },
-        find: {
-            rest: "GET /find",
-            permissions: ['accounts.profiles.find']
-        },
-        count: {
-            rest: "GET /count",
-            permissions: ['accounts.profiles.count']
-        },
-        get: {
-            needEntity: true,
-            permissions: ['accounts.profiles.get']
-        },
-        update: {
-            needEntity: true,
-            permissions: ['accounts.profiles.update']
-        },
-        replace: false,
-        remove: {
-            needEntity: true,
-            permissions: ['accounts.profiles.remove']
-        },
+        ...DbService.ACTIONS,
+
+        
         resolveProfile: {
             description: "Add members to the board",
             rest: "GET /me",
