@@ -143,6 +143,22 @@ module.exports = {
      */
     actions: {
 
+        verifyUserID: {
+            visibility: "public",
+            params: {
+                id: "string"
+            },
+            async handler(ctx) {
+                return this.updateEntity(
+                    ctx,
+                    {
+                        id: ctx.params.id,
+                        verified: true
+                    },
+                    { permissive: true }
+                );
+            }
+        },
 
         /**
          * Get user by JWT token (for API GW authentication)
