@@ -261,12 +261,21 @@ module.exports = {
                 }
             },
             async handler(ctx) {
-                const user = await this.resolveEntities(ctx, { id: ctx.params.userID });
+                const user = await this.resolveEntities(ctx, { id: ctx.params.id });
+
+                if(!user){
+                    throw new MoleculerClientError(
+                        "Account not found.",
+                        400,
+                        "ACCOUNT_NOT_FOUND"
+                    );
+                }
+
                 try {
                     return await this.updateEntity(
                         ctx,
                         {
-                            id: ctx.params.userID,
+                            id: user.id,
                             plan: ctx.params.plan
                         },
                         { permissive: true }
