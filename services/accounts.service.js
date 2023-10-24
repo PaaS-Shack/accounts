@@ -56,6 +56,12 @@ const FIELDS = {
     plan: {
         type: "string",
         readonly: true,
+        enum:[
+            "free",
+            "paid",
+            "pro",
+            "enterprise"
+        ],
         default() {
             return this.config["accounts.defaultPlan"];
         }
@@ -222,6 +228,54 @@ module.exports = {
                 try {
                     this.checkUser(user);
                     return user;
+                } catch (err) {
+                    return null;
+                }
+            }
+        },
+
+        /**
+         * upgrade account plan
+         * 
+         * @actions
+         * @param {String} id - user id
+         * @param {String} plan - plan name
+         * 
+         * @returns {Object} User entity
+         */
+        upgradePlan: {
+            description: "upgrade account plan",
+            cache: {
+                keys: ["#userID"]
+            },
+            rest: "POST /upgrade-plan",
+            permissions: [C.ROLE_AUTHENTICATED],
+            params: {
+                id: "string",
+                plan: {
+                    type: "string",
+                    enum: [
+                        "free",
+                        "paid",
+                        "pro",
+                        "enterprise"
+                    ]
+                }
+            },
+            async handler(ctx) {
+                if (!ctx.meta.userID) return null;
+
+                const user = await this.resolveEntities(ctx, { id: ctx.meta.userID });
+                try {
+                    this.checkUser(user);
+                    return await this.updateEntity(
+                        ctx,
+                        {
+                            id: ctx.meta.userID,
+                            plan: ctx.params.plan
+                        },
+                        { permissive: true }
+                    );
                 } catch (err) {
                     return null;
                 }
