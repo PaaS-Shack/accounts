@@ -90,7 +90,6 @@ module.exports = {
      * Actions
      */
     actions: {
-        ...DbService.ACTIONS,
 
         can: {
             rest: 'POST /can',

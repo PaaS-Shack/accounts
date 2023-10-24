@@ -146,10 +146,6 @@ module.exports = {
      * Actions
      */
     actions: {
-
-        ...DbService.ACTIONS,
-
-        
         resolveProfile: {
             description: "Add members to the board",
             rest: "GET /me",
