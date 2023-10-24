@@ -56,7 +56,7 @@ const FIELDS = {
     plan: {
         type: "string",
         readonly: true,
-        enum:[
+        enum: [
             "free",
             "paid",
             "pro",
@@ -77,7 +77,7 @@ const FIELDS = {
         }
     },
     lastLoginAt: { type: "number", readonly: false },
-    
+
     ...DbService.FIELDS
 };
 
@@ -133,7 +133,7 @@ module.exports = {
             "accounts.password.minimum": 6,
         },
 
-        
+
         defaultPopulates: [],
 
         scopes: {
@@ -220,7 +220,6 @@ module.exports = {
                 keys: ["#userID"]
             },
             rest: "GET /me",
-            permissions: [C.ROLE_AUTHENTICATED],
             async handler(ctx) {
                 if (!ctx.meta.userID) return null;
 
@@ -235,7 +234,7 @@ module.exports = {
         },
 
         /**
-         * upgrade account plan
+         * change account plan
          * 
          * @actions
          * @param {String} id - user id
@@ -243,13 +242,12 @@ module.exports = {
          * 
          * @returns {Object} User entity
          */
-        upgradePlan: {
+        chaangePlan: {
             description: "upgrade account plan",
             cache: {
                 keys: ["#userID"]
             },
-            rest: "POST /upgrade-plan",
-            permissions: [C.ROLE_AUTHENTICATED],
+            rest: "POST /:id/plan",
             params: {
                 id: "string",
                 plan: {
@@ -263,15 +261,12 @@ module.exports = {
                 }
             },
             async handler(ctx) {
-                if (!ctx.meta.userID) return null;
-
-                const user = await this.resolveEntities(ctx, { id: ctx.meta.userID });
+                const user = await this.resolveEntities(ctx, { id: ctx.params.userID });
                 try {
-                    this.checkUser(user);
                     return await this.updateEntity(
                         ctx,
                         {
-                            id: ctx.meta.userID,
+                            id: ctx.params.userID,
                             plan: ctx.params.plan
                         },
                         { permissive: true }

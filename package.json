@@ -29,13 +29,13 @@
     "nats": "^2.7.1",
     "moleculer": "^0.14.26",
     "bcrypt": "^5.0.1",
-    "config-mixin": "git+https://github.com/FLYBYME/config-mixin.git",
+    "config-mixin": "git+https://github.com/PaaS-Shack/config-mixin.git",
     "cron-mixin": "git+https://github.com/PaaS-Shack/cron-mixin.git",
     "db-mixin": "git+https://github.com/PaaS-Shack/db-mixin.git",
     "middlewares": "git+https://github.com/PaaS-Shack/middlewares.git",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
-    "membership-mixin": "git+https://github.com/FLYBYME/membership-mixin.git",
+    "membership-mixin": "git+https://github.com/PaaS-Shack/membership-mixin.git",
     "speakeasy": "^2.0.0"
   },
   "engines": {
